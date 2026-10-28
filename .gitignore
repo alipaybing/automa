@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+# 真实采集结果与原始截图默认不公开
+red_note.json
+red_note_links.json
+private/
