@@ -1,0 +1,32 @@
+{
+  "verified_on": "2026-10-28",
+  "operator": "用户手动运行 Automa，助手核验导出文件与截图",
+  "keyword_counts": {
+    "澳洲申博": 10,
+    "澳洲博士": 10
+  },
+  "records": 20,
+  "link_records": 20,
+  "unique_links": 20,
+  "links_match_data": true,
+  "nonempty_fields": {
+    "keyword": 20,
+    "name": 20,
+    "img": 20,
+    "detail": 20,
+    "edit_time": 20,
+    "comments": 17,
+    "link": 20
+  },
+  "notes": [
+    "字段有值不代表内容准确性已逐条人工复核。",
+    "评论仅为当前页面加载内容；3 篇未采到评论。",
+    "截图显示插件此前已安装，未记录全新安装确认过程。",
+    "原始采集结果仅保存在被 gitignore 排除的 private/ 中。",
+    "未取得实际执行流程的完整导出文件，未做逐字节一致性验证。"
+  ],
+  "repository_workflow_sha256": "f05d092bb2b28ab249c5a93280275e6302e56e843a9f6367d732ea0858ac6d6a",
+  "executed_workflow_export_verified": false,
+  "sorting": "default search order; filter/latest blocks bypassed",
+  "workflow_sync": "用户确认运行时跳过筛选和最新；仓库已同步该连线，未再次执行同步文件。"
+}
