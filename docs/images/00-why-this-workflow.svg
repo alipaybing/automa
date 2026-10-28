@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440">
+<rect width="1080" height="1440" fill="#f7f5ee"/>
+<rect x="74" y="78" width="110" height="12" rx="6" fill="#e55c3b"/>
+<g font-family="PingFang SC,Heiti SC,Arial Unicode MS,sans-serif" fill="#193b38">
+<text x="74" y="153" font-size="30" letter-spacing="3">留学 · 租房 · 海外生活</text>
+<text x="68" y="305" font-size="86" font-weight="700">小红书的经验</text>
+<text x="68" y="414" font-size="86" font-weight="700">交给 AI 分析</text>
+<text x="75" y="503" font-size="35" fill="#64706a">把零散笔记，整理成能判断的资料</text>
+<rect x="74" y="591" width="932" height="379" rx="26" fill="#193b38"/>
+<g fill="#f7f5ee" font-size="44" font-weight="600">
+<text x="121" y="683">01　按关键词收集笔记</text>
+<text x="121" y="794">02　导出资料，上传给大模型</text>
+<text x="121" y="905">03　总结对比，标记推广线索</text>
+</g>
+<text x="75" y="1074" font-size="37" font-weight="600">少翻重复的帖，多核对关键结论</text>
+<text x="75" y="1140" font-size="31" fill="#64706a">2 个关键词 · 20 篇实际导出 · 图文教程</text>
+<line x1="74" x2="1006" y1="1214" y2="1214" stroke="#ced4c9" stroke-width="2"/>
+<text x="75" y="1284" font-size="31">Automa 工作流 · 脚本与教程</text>
+<text x="75" y="1341" font-size="32" font-weight="600">github.com/alipaybing/automa</text>
+</g></svg>
