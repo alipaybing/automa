@@ -1,0 +1,451 @@
+{
+  "extVersion": "1.30.02",
+  "name": "rednote_v5_多关键词",
+  "icon": "riGlobalLine",
+  "table": [
+    { "id": "kwCol1", "name": "keyword", "type": "string" },
+    { "id": "YzvfL", "name": "name", "type": "string" },
+    { "id": "EImPx", "name": "img", "type": "string" },
+    { "id": "kxpk7", "name": "detail", "type": "string" },
+    { "id": "qbHIr", "name": "edit_time", "type": "string" },
+    { "id": "RJspv", "name": "comments", "type": "string" },
+    { "id": "LuPoX", "name": "link", "type": "string" }
+  ],
+  "version": "1.30.02",
+  "drawflow": {
+    "nodes": [
+      {
+        "id": "73nvaXCprLcMZ46-4RDAz",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 0, "y": 0 },
+        "data": {
+          "activeInInput": false, "contextMenuName": "", "contextTypes": [], "date": "", "days": [], "delay": 5,
+          "description": "", "disableBlock": false, "interval": 60, "isUrlRegex": false,
+          "observeElement": {
+            "baseElOptions": { "attributeFilter": [], "attributes": false, "characterData": false, "childList": true, "subtree": false },
+            "baseSelector": "", "matchPattern": "", "selector": "",
+            "targetOptions": { "attributeFilter": [], "attributes": false, "characterData": false, "childList": true, "subtree": false }
+          },
+          "parameters": [
+            { "name": "关键词", "type": "string", "description": "多个关键词用逗号隔开", "defaultValue": "阿德莱德修车", "placeholder": "例如：阿德莱德修车,阿德莱德汽修", "data": { "masks": [{ "isRegex": false, "mask": "", "lazy": false }], "required": false, "useMask": false, "unmaskValue": false } },
+            { "name": "每个关键词篇数", "type": "string", "description": "每个关键词最多抓多少篇", "defaultValue": "30", "placeholder": "30", "data": { "masks": [{ "isRegex": false, "mask": "", "lazy": false }], "required": false, "useMask": false, "unmaskValue": false } }
+          ],
+          "preferParamsInTab": false, "shortcut": "", "time": "00:00",
+          "triggers": [
+            {
+              "data": {
+                "activeInInput": false, "contextMenuName": "", "contextTypes": [], "date": "", "days": [], "delay": 5,
+                "description": "", "disableBlock": false, "interval": 60, "isUrlRegex": false,
+                "observeElement": {
+                  "baseElOptions": { "attributeFilter": [], "attributes": false, "characterData": false, "childList": true, "subtree": false },
+                  "baseSelector": "", "matchPattern": "", "selector": "",
+                  "targetOptions": { "attributeFilter": [], "attributes": false, "characterData": false, "childList": true, "subtree": false }
+                },
+                "parameters": [
+                  { "name": "关键词", "type": "string", "description": "多个关键词用逗号隔开", "defaultValue": "阿德莱德修车", "placeholder": "例如：阿德莱德修车,阿德莱德汽修", "data": { "masks": [{ "isRegex": false, "mask": "", "lazy": false }], "required": false, "useMask": false, "unmaskValue": false } },
+                  { "name": "每个关键词篇数", "type": "string", "description": "每个关键词最多抓多少篇", "defaultValue": "30", "placeholder": "30", "data": { "masks": [{ "isRegex": false, "mask": "", "lazy": false }], "required": false, "useMask": false, "unmaskValue": false } }
+                ],
+                "preferParamsInTab": false, "shortcut": "", "time": "00:00", "type": "manual", "url": ""
+              },
+              "id": "AyD-_",
+              "type": "manual"
+            }
+          ],
+          "type": "manual",
+          "url": ""
+        },
+        "label": "trigger"
+      },
+      {
+        "id": "kmh629d",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 300, "y": 0 },
+        "data": {
+          "disableBlock": false, "description": "打开小红书", "url": "https://www.xiaohongshu.com/explore",
+          "userAgent": "", "active": true, "tabZoom": 1, "inGroup": false, "waitTabLoaded": true,
+          "updatePrevTab": true, "customUserAgent": false,
+          "onError": { "dataToInsert": [], "enable": false, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "error" },
+          "settings": { "blockTimeout": 0, "debugMode": false }
+        },
+        "label": "new-tab"
+      },
+      {
+        "id": "gvaeyjs",
+        "type": "BlockDelay",
+        "initialized": false,
+        "position": { "x": 600, "y": 0 },
+        "data": { "disableBlock": false, "settings": { "blockTimeout": 0, "debugMode": false }, "time": "1500" },
+        "label": "delay"
+      },
+      {
+        "id": "prep01",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 900, "y": 0 },
+        "data": {
+          "description": "准备关键词",
+          "disableBlock": false,
+          "timeout": 20000,
+          "context": "website",
+          "code": "const DEFAULT_KEYWORDS = '阿德莱德修车';\nconst DEFAULT_PER_KEYWORD = 30;\ntry {\n  const kwRaw = String(automaRefData('variables', '关键词') || DEFAULT_KEYWORDS);\n  let per = parseInt(automaRefData('variables', '每个关键词篇数'), 10);\n  if (!per || per < 1) per = DEFAULT_PER_KEYWORD;\n  const kwList = kwRaw.split(/[,，、;；]+/).map(s => s.trim()).filter(Boolean).map(kw => ({ kw: kw, url: 'https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(kw) + '&source=web_explore_feed' }));\n  automaSetVariable('kwList', kwList);\n  automaSetVariable('perKeyword', per);\n  automaSetVariable('allLinks', []);\n  console.log('[准备] 关键词：' + kwList.map(k => k.kw).join(' / ') + '，每个关键词 ' + per + ' 篇');\n} catch (e) {\n  console.error('[准备] 出错', e);\n}\nautomaNextBlock();",
+          "preloadScripts": [],
+          "everyNewTab": false,
+          "runBeforeLoad": false
+        },
+        "label": "javascript-code"
+      },
+      {
+        "id": "kwloop01",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1200, "y": 0 },
+        "data": {
+          "description": "逐个关键词", "disableBlock": false, "elementSelector": "", "fromNumber": 1,
+          "loopData": "[]", "loopId": "kwLoop", "loopThrough": "variable", "maxLoop": "100",
+          "onError": { "dataToInsert": [], "enable": false, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "error" },
+          "referenceKey": "", "resumeLastWorkflow": false, "reverseLoop": false,
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "startIndex": 0, "toNumber": 10, "variableName": "kwList",
+          "waitForSelector": false, "waitSelectorTimeout": 5000
+        },
+        "label": "loop-data"
+      },
+      {
+        "id": "kwtab01",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1500, "y": 0 },
+        "data": {
+          "disableBlock": false, "description": "打开搜索结果", "url": "{{loopData.kwLoop.url}}",
+          "userAgent": "", "active": true, "tabZoom": 1, "inGroup": false, "waitTabLoaded": true,
+          "updatePrevTab": true, "customUserAgent": false,
+          "onError": { "dataToInsert": [], "enable": false, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "error" },
+          "settings": { "blockTimeout": 0, "debugMode": false }
+        },
+        "label": "new-tab"
+      },
+      {
+        "id": "kwdelay01",
+        "type": "BlockDelay",
+        "initialized": false,
+        "position": { "x": 1800, "y": 0 },
+        "data": { "disableBlock": false, "settings": { "blockTimeout": 0, "debugMode": false }, "time": "2500" },
+        "label": "delay"
+      },
+      {
+        "id": "gl4ylut",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 300, "y": 250 },
+        "data": {
+          "description": "点击筛选", "disableBlock": false, "findBy": "cssSelector", "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [], "enable": true, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "selector": "svg.filter-icon", "waitForSelector": true, "waitSelectorTimeout": 5000
+        },
+        "label": "event-click"
+      },
+      {
+        "id": "nxix5gu",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 600, "y": 250 },
+        "data": {
+          "description": "点击最新", "disableBlock": false, "findBy": "cssSelector", "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [], "enable": true, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "selector": "#global > div.main-container > div.with-side-bar.main-content > div > div > div.search-layout__top > div.filter > div > div > div.filters-wrapper > div:nth-child(1) > div > div:nth-child(4)",
+          "waitForSelector": true, "waitSelectorTimeout": 5000
+        },
+        "label": "event-click"
+      },
+      {
+        "id": "ql4txe2",
+        "type": "BlockDelay",
+        "initialized": false,
+        "position": { "x": 900, "y": 250 },
+        "data": { "disableBlock": false, "settings": { "blockTimeout": 0, "debugMode": false }, "time": "1500" },
+        "label": "delay"
+      },
+      {
+        "id": "collect01",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1200, "y": 250 },
+        "data": {
+          "description": "滚动收集链接",
+          "disableBlock": false,
+          "timeout": 300000,
+          "context": "website",
+          "code": "(async () => {\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  try {\n    const per = Number(automaRefData('variables', 'perKeyword')) || 30;\n    const all = automaRefData('variables', 'allLinks') || [];\n    let kw = '';\n    try { kw = new URL(location.href).searchParams.get('keyword') || ''; } catch (e) {}\n    if (!kw) { const inp = document.querySelector('#search-input, textarea#search-input-in-feeds'); if (inp) kw = inp.value || ''; }\n    const seen = new Set(all.map(x => x.id));\n    const got = [];\n    let idle = 0;\n    for (let round = 0; round < 60 && got.length < per && idle < 6; round++) {\n      const before = got.length;\n      const cards = document.querySelectorAll('div.feeds-container section a.cover, section.note-item a.cover');\n      cards.forEach(a => {\n        if (got.length >= per) return;\n        const href = a.href || '';\n        const m = href.match(/([0-9a-f]{24})/i);\n        if (!m) return;\n        const id = m[1].toLowerCase();\n        if (seen.has(id)) return;\n        seen.add(id);\n        got.push({ id: id, kw: kw, url: href });\n      });\n      idle = got.length === before ? idle + 1 : 0;\n      if (got.length >= per) break;\n      const last = cards[cards.length - 1];\n      if (last) last.scrollIntoView({ block: 'end' });\n      window.scrollBy(0, 1200);\n      await sleep(1500 + Math.floor(Math.random() * 1000));\n    }\n    automaSetVariable('allLinks', all.concat(got));\n    console.log('[收集] ' + kw + '：本词 ' + got.length + ' 篇，累计 ' + (all.length + got.length) + ' 篇');\n  } catch (e) {\n    console.error('[收集] 出错', e);\n  }\n  automaNextBlock();\n})();",
+          "preloadScripts": [],
+          "everyNewTab": false,
+          "runBeforeLoad": false
+        },
+        "label": "javascript-code"
+      },
+      {
+        "id": "kwbreak01",
+        "type": "BlockLoopBreakpoint",
+        "initialized": false,
+        "position": { "x": 1500, "y": 250 },
+        "data": { "clearLoop": false, "disableBlock": false, "loopId": "kwLoop" },
+        "label": "loop-breakpoint"
+      },
+      {
+        "id": "aewa4f1",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1800, "y": 250 },
+        "data": {
+          "description": "逐个帖子", "disableBlock": false, "elementSelector": "", "fromNumber": 1,
+          "loopData": "[]", "loopId": "bKgsXZ", "loopThrough": "variable", "maxLoop": "1000",
+          "onError": { "dataToInsert": [], "enable": false, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "error" },
+          "referenceKey": "", "resumeLastWorkflow": false, "reverseLoop": false,
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "startIndex": 0, "toNumber": 10, "variableName": "allLinks",
+          "waitForSelector": false, "waitSelectorTimeout": 5000
+        },
+        "label": "loop-data"
+      },
+      {
+        "id": "1wa3rjz",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 300, "y": 500 },
+        "data": {
+          "active": true, "customUserAgent": false, "description": "打开单个帖子", "disableBlock": false, "inGroup": false,
+          "onError": { "dataToInsert": [], "enable": true, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "fallback" },
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "tabZoom": 1, "updatePrevTab": false, "url": "{{loopData.bKgsXZ.url}}", "userAgent": "", "waitTabLoaded": true
+        },
+        "label": "new-tab"
+      },
+      {
+        "id": "8sqvbw1",
+        "type": "BlockDelay",
+        "initialized": false,
+        "position": { "x": 600, "y": 500 },
+        "data": { "disableBlock": false, "settings": { "blockTimeout": 0, "debugMode": false }, "time": "800" },
+        "label": "delay"
+      },
+      {
+        "id": "xnay2ks",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 900, "y": 500 },
+        "data": {
+          "addExtraRow": false, "assignVariable": false, "dataColumn": "YzvfL", "description": "获取标题", "disableBlock": false,
+          "extraRowDataColumn": "", "extraRowValue": "", "findBy": "cssSelector", "includeTags": false, "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [{ "name": "YzvfL", "type": "table", "value": "无标题" }], "enable": true, "errorMessage": "", "insertData": true, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "prefixText": "", "regex": "", "regexExp": [], "saveData": true, "selector": "div#detail-title",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "suffixText": "", "useTextContent": false, "variableName": "", "waitForSelector": true, "waitSelectorTimeout": 5000
+        },
+        "label": "get-text"
+      },
+      {
+        "id": "av2olc1",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1200, "y": 500 },
+        "data": {
+          "addExtraRow": false, "assignVariable": false, "dataColumn": "kxpk7", "description": "获取正文", "disableBlock": false,
+          "extraRowDataColumn": "", "extraRowValue": "", "findBy": "cssSelector", "includeTags": false, "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [{ "name": "kxpk7", "type": "table", "value": "空" }], "enable": true, "errorMessage": "", "insertData": true, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "prefixText": "", "regex": "", "regexExp": [], "saveData": true, "selector": "div#detail-desc",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "suffixText": "", "useTextContent": false, "variableName": "", "waitForSelector": true, "waitSelectorTimeout": 5000
+        },
+        "label": "get-text"
+      },
+      {
+        "id": "56l6ak3",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1500, "y": 500 },
+        "data": {
+          "addExtraRow": false, "assignVariable": false, "dataColumn": "qbHIr", "description": "获取编辑时间", "disableBlock": false,
+          "extraRowDataColumn": "", "extraRowValue": "", "findBy": "cssSelector", "includeTags": false, "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [{ "name": "qbHIr", "type": "table", "value": "null" }], "enable": true, "errorMessage": "", "insertData": true, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "prefixText": "", "regex": "", "regexExp": [], "saveData": true, "selector": ".bottom-container > .date",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "suffixText": "", "useTextContent": false, "variableName": "", "waitForSelector": true, "waitSelectorTimeout": 5000
+        },
+        "label": "get-text"
+      },
+      {
+        "id": "kkpysad",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1800, "y": 500 },
+        "data": {
+          "description": "滑动加载评论", "disableBlock": false, "findBy": "cssSelector", "incX": false, "incY": false, "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [], "enable": true, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "scrollIntoView": false, "scrollX": 0, "scrollY": 3000, "selector": "div.note-content",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "smooth": true, "waitForSelector": false, "waitSelectorTimeout": 5000
+        },
+        "label": "element-scroll"
+      },
+      {
+        "id": "hl762we",
+        "type": "BlockDelay",
+        "initialized": false,
+        "position": { "x": 300, "y": 750 },
+        "data": { "disableBlock": false, "settings": { "blockTimeout": 0, "debugMode": false }, "time": "800" },
+        "label": "delay"
+      },
+      {
+        "id": "44uauyp",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 600, "y": 750 },
+        "data": {
+          "addExtraRow": false, "assignVariable": false, "dataColumn": "RJspv", "description": "获取评论", "disableBlock": false,
+          "extraRowDataColumn": "", "extraRowValue": "", "findBy": "cssSelector", "includeTags": false, "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [{ "name": "RJspv", "type": "table", "value": "empty" }], "enable": true, "errorMessage": "", "insertData": true, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "prefixText": "", "regex": "", "regexExp": [], "saveData": true, "selector": "div.comments-container",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "suffixText": "", "useTextContent": false, "variableName": "", "waitForSelector": true, "waitSelectorTimeout": 1000
+        },
+        "label": "get-text"
+      },
+      {
+        "id": "26svlj8",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 900, "y": 750 },
+        "data": {
+          "dataList": [
+            { "action": "default", "filePath": "", "isFile": false, "name": "LuPoX", "type": "table", "value": "{{loopData.bKgsXZ.url}}" },
+            { "action": "default", "filePath": "", "isFile": false, "name": "kwCol1", "type": "table", "value": "{{loopData.bKgsXZ.kw}}" }
+          ],
+          "description": "写入链接和关键词",
+          "disableBlock": false
+        },
+        "label": "insert-data"
+      },
+      {
+        "id": "rp81b25",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1200, "y": 750 },
+        "data": {
+          "action": "get", "addExtraRow": false, "assignVariable": false, "attributeName": "src", "attributeValue": "",
+          "dataColumn": "EImPx", "description": "获取图片链接", "disableBlock": false, "extraRowDataColumn": "", "extraRowValue": "",
+          "findBy": "cssSelector", "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [{ "name": "EImPx", "type": "table", "value": "null" }], "enable": true, "errorMessage": "", "insertData": true, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "saveData": true, "selector": ".swiper-slide-visible img",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "variableName": "", "waitForSelector": false, "waitSelectorTimeout": 5000
+        },
+        "label": "attribute-value"
+      },
+      {
+        "id": "zqv7f17",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1500, "y": 750 },
+        "data": {
+          "description": "回退", "disableBlock": false, "findBy": "cssSelector", "markEl": false, "multiple": false,
+          "onError": { "dataToInsert": [], "enable": true, "errorMessage": "", "insertData": false, "retry": false, "retryInterval": 2, "retryTimes": 1, "toDo": "continue" },
+          "selector": ".close use",
+          "settings": { "blockTimeout": 0, "debugMode": false },
+          "waitForSelector": true, "waitSelectorTimeout": 2000
+        },
+        "label": "event-click"
+      },
+      {
+        "id": "i131u26",
+        "type": "BlockDelay",
+        "initialized": false,
+        "position": { "x": 1800, "y": 750 },
+        "data": { "disableBlock": false, "settings": { "blockTimeout": 0, "debugMode": false }, "time": "600" },
+        "label": "delay"
+      },
+      {
+        "id": "2paj8hb",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 300, "y": 1000 },
+        "data": { "activeTab": true, "allWindows": false, "closeType": "tab", "description": "关闭帖子页", "disableBlock": false, "url": "" },
+        "label": "close-tab"
+      },
+      {
+        "id": "8kly6rr",
+        "type": "BlockLoopBreakpoint",
+        "initialized": false,
+        "position": { "x": 600, "y": 1000 },
+        "data": { "clearLoop": false, "disableBlock": false, "loopId": "bKgsXZ" },
+        "label": "loop-breakpoint"
+      },
+      {
+        "id": "ulmni5q",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 900, "y": 1000 },
+        "data": {
+          "addBOMHeader": true, "csvDelimiter": ",", "dataToExport": "data-columns", "description": "导出数据", "disableBlock": false,
+          "name": "red_note", "onConflict": "overwrite", "refKey": "", "type": "json", "variableName": ""
+        },
+        "label": "export-data"
+      },
+      {
+        "id": "uvh2yxi",
+        "type": "BlockBasic",
+        "initialized": false,
+        "position": { "x": 1200, "y": 1000 },
+        "data": {
+          "addBOMHeader": true, "csvDelimiter": ",", "dataToExport": "variable", "description": "导出链接", "disableBlock": false,
+          "name": "red_note_links", "onConflict": "overwrite", "refKey": "", "type": "json", "variableName": "allLinks"
+        },
+        "label": "export-data"
+      }
+    ],
+    "edges": [
+      { "id": "t01", "type": "custom", "source": "73nvaXCprLcMZ46-4RDAz", "target": "kmh629d", "sourceHandle": "73nvaXCprLcMZ46-4RDAz-output-1", "targetHandle": "kmh629d-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t02", "type": "custom", "source": "kmh629d", "target": "gvaeyjs", "sourceHandle": "kmh629d-output-1", "targetHandle": "gvaeyjs-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t03", "type": "custom", "source": "gvaeyjs", "target": "prep01", "sourceHandle": "gvaeyjs-output-1", "targetHandle": "prep01-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t04", "type": "custom", "source": "prep01", "target": "kwloop01", "sourceHandle": "prep01-output-1", "targetHandle": "kwloop01-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t05", "type": "custom", "source": "kwloop01", "target": "kwtab01", "sourceHandle": "kwloop01-output-1", "targetHandle": "kwtab01-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t06", "type": "custom", "source": "kwtab01", "target": "kwdelay01", "sourceHandle": "kwtab01-output-1", "targetHandle": "kwdelay01-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t07", "type": "custom", "source": "kwdelay01", "target": "gl4ylut", "sourceHandle": "kwdelay01-output-1", "targetHandle": "gl4ylut-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t08", "type": "custom", "source": "gl4ylut", "target": "nxix5gu", "sourceHandle": "gl4ylut-output-1", "targetHandle": "nxix5gu-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t09", "type": "custom", "source": "nxix5gu", "target": "ql4txe2", "sourceHandle": "nxix5gu-output-1", "targetHandle": "ql4txe2-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t10", "type": "custom", "source": "ql4txe2", "target": "collect01", "sourceHandle": "ql4txe2-output-1", "targetHandle": "collect01-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t11", "type": "custom", "source": "collect01", "target": "kwbreak01", "sourceHandle": "collect01-output-1", "targetHandle": "kwbreak01-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t12", "type": "custom", "source": "kwbreak01", "target": "aewa4f1", "sourceHandle": "kwbreak01-output-1", "targetHandle": "aewa4f1-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t13", "type": "custom", "source": "aewa4f1", "target": "1wa3rjz", "sourceHandle": "aewa4f1-output-1", "targetHandle": "1wa3rjz-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t14", "type": "custom", "source": "1wa3rjz", "target": "8sqvbw1", "sourceHandle": "1wa3rjz-output-1", "targetHandle": "8sqvbw1-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t15", "type": "custom", "source": "1wa3rjz", "target": "8kly6rr", "sourceHandle": "1wa3rjz-output-fallback", "targetHandle": "8kly6rr-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t16", "type": "custom", "source": "8sqvbw1", "target": "xnay2ks", "sourceHandle": "8sqvbw1-output-1", "targetHandle": "xnay2ks-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t17", "type": "custom", "source": "xnay2ks", "target": "av2olc1", "sourceHandle": "xnay2ks-output-1", "targetHandle": "av2olc1-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t18", "type": "custom", "source": "av2olc1", "target": "56l6ak3", "sourceHandle": "av2olc1-output-1", "targetHandle": "56l6ak3-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t19", "type": "custom", "source": "56l6ak3", "target": "kkpysad", "sourceHandle": "56l6ak3-output-1", "targetHandle": "kkpysad-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t20", "type": "custom", "source": "kkpysad", "target": "hl762we", "sourceHandle": "kkpysad-output-1", "targetHandle": "hl762we-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t21", "type": "custom", "source": "hl762we", "target": "44uauyp", "sourceHandle": "hl762we-output-1", "targetHandle": "44uauyp-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t22", "type": "custom", "source": "44uauyp", "target": "26svlj8", "sourceHandle": "44uauyp-output-1", "targetHandle": "26svlj8-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t23", "type": "custom", "source": "26svlj8", "target": "rp81b25", "sourceHandle": "26svlj8-output-1", "targetHandle": "rp81b25-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t24", "type": "custom", "source": "rp81b25", "target": "zqv7f17", "sourceHandle": "rp81b25-output-1", "targetHandle": "zqv7f17-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t25", "type": "custom", "source": "zqv7f17", "target": "i131u26", "sourceHandle": "zqv7f17-output-1", "targetHandle": "i131u26-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t26", "type": "custom", "source": "i131u26", "target": "2paj8hb", "sourceHandle": "i131u26-output-1", "targetHandle": "2paj8hb-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t27", "type": "custom", "source": "2paj8hb", "target": "8kly6rr", "sourceHandle": "2paj8hb-output-1", "targetHandle": "8kly6rr-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t28", "type": "custom", "source": "8kly6rr", "target": "ulmni5q", "sourceHandle": "8kly6rr-output-1", "targetHandle": "ulmni5q-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" },
+      { "id": "t29", "type": "custom", "source": "ulmni5q", "target": "uvh2yxi", "sourceHandle": "ulmni5q-output-1", "targetHandle": "uvh2yxi-input-1", "updatable": true, "selectable": true, "data": {}, "label": "", "markerEnd": "arrowclosed" }
+    ],
+    "position": [100, 100],
+    "zoom": 0.7,
+    "viewport": { "x": 100, "y": 100, "zoom": 0.7 }
+  },
+  "settings": {
+    "publicId": "", "restartTimes": 3, "notification": true, "tabLoadTimeout": 30000, "inputAutocomplete": true,
+    "insertDefaultColumn": false, "defaultColumnName": "column", "aipowerToken": "", "blockDelay": 0, "debugMode": false,
+    "execContext": "popup", "executedBlockOnWeb": false, "onError": "stop-workflow", "reuseLastState": false, "saveLog": true
+  },
+  "globalData": "{\n\t\"key\": \"value\"\n}",
+  "description": "",
+  "includedWorkflows": {}
+}
